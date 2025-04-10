@@ -1,0 +1,6 @@
+torch
+transformers
+tqdm
+chardet
+pymilvus
+pynvml

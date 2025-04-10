@@ -1,0 +1,27 @@
+#!/bin/bash
+
+WHERES=$(dirname "$0")
+
+IFS=$'\n'
+MATCHES=$($WHERES/wheres $@)
+
+if [[ -z "$MATCHES" ]]; then
+	exit 0
+fi
+
+PICKED=$(printf "%s\n" $MATCHES | fzf --preview='bat -f -r $(echo {} | awk "{ print \$1; }" | awk -F: "{ print \$2; }" | awk -F- "{ print \$1\":\"\$2; }") $(echo {} | awk -F: "{ print \$1; }")')
+
+if [[ -z "$PICKED" ]]; then
+	exit 0
+fi
+
+MATCH=$(echo $PICKED | awk '{ print $1; }')
+FILE=$(echo $MATCH | awk -F: '{ print $1; }')
+
+LINES=$(echo $MATCH | awk -F: '{ print $2; }')
+BEGIN_LINE=$(echo $LINES | awk -F- '{ print $1; }')
+END_LINE=$(echo $LINES | awk -F- '{ print $2; }')
+
+MIDDLE_LINE=$(($(($BEGIN_LINE + $END_LINE)) / 2))
+
+$EDITOR $FILE +$MIDDLE_LINE
