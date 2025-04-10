@@ -91,7 +91,8 @@ def reindex_files(db: VectorDB, model: Model, config: Config, files_to_reindex):
                 _record_row(db, model, file.as_posix(), lines, line, end_line)
             except RuntimeError as e:
                 import gc
-                import torch.cuda
                 gc.collect()
-                torch.cuda.empty_cache()
+                import torch.cuda
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
                 print(f"Failed to record row: {e}", file=sys.stderr)
