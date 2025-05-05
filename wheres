@@ -2,4 +2,4 @@
 
 WHERES=$(dirname "$0")
 
-$WHERES/venv/bin/python $WHERES/src/main.py $@
+"$WHERES/venv/bin/python" "$WHERES/src/main.py" "$@"
